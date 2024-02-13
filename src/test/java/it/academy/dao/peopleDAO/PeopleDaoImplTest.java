@@ -3,7 +3,6 @@ package it.academy.dao.peopleDAO;
 import it.academy.MockConstants;
 import it.academy.MockUtils;
 import it.academy.Utils.HibernateUtil;
-import it.academy.dao.addressDAO.AddressDAO;
 import it.academy.dao.addressDAO.AddressDaoImpl;
 import it.academy.dto.People;
 import org.junit.jupiter.api.Assertions;
@@ -60,6 +59,7 @@ class PeopleDaoImplTest {
         People peopleFromDB = em.find(People.class, people.getId());
         em.getTransaction().commit();
         assertNotNull(peopleFromDB);
+        assertNotNull(peopleFromDB.getAddress());
         assertEquals(peopleFromDB, people);
 
         em = HibernateUtil.getEntityManager();

@@ -78,8 +78,8 @@ public class Main {
         listP.forEach(System.out::println);
 
         //deleting any rows(3)
-        peopleDAO.delete(ID_TO_DELETE);
         addressDAO.delete(ID_TO_DELETE);
+        peopleDAO.delete(ID_TO_DELETE);
         HibernateUtil.closeFactory();
     }
 }

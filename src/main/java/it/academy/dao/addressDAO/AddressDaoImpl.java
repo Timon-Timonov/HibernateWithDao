@@ -3,10 +3,12 @@ package it.academy.dao.addressDAO;
 import it.academy.Utils.HibernateUtil;
 import it.academy.dao.DaoImpl;
 import it.academy.dto.Address;
+import it.academy.dto.People;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Set;
 
 public class AddressDaoImpl extends DaoImpl<Address> implements AddressDAO {
 
@@ -24,5 +26,20 @@ public class AddressDaoImpl extends DaoImpl<Address> implements AddressDAO {
         em.getTransaction().commit();
         em.close();
         return list;
+    }
+
+    @Override
+    public void delete(int id) {
+        Set<People> peopleSet = super.get(id).getPeople();
+        if (peopleSet != null && !peopleSet.isEmpty()) {
+            EntityManager em = HibernateUtil.getEntityManager();
+            em.getTransaction().begin();
+            peopleSet.stream()
+                .peek(people -> people.setAddress(null))
+                .forEach(em::merge);
+            em.getTransaction().commit();
+            em.close();
+        }
+        super.delete(id);
     }
 }

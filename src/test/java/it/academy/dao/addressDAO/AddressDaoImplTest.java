@@ -4,10 +4,12 @@ import it.academy.MockConstants;
 import it.academy.MockUtils;
 import it.academy.Utils.HibernateUtil;
 import it.academy.dto.Address;
+import it.academy.dto.People;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -72,7 +74,14 @@ class AddressDaoImplTest {
     void getAll() {
         List<Address> addresses = dao.getAll();
         assertNotNull(addresses);
-        assertEquals(MockConstants.TEST_ADDRESSES_COUNT, addresses.size());
+        EntityManager em = HibernateUtil.getEntityManager();
+        em.getTransaction().begin();
+        Query query = em.createQuery("SELECT COUNT(a) FROM Address a ");
+        String str = String.valueOf(query.getSingleResult());
+        Integer count = Integer.parseInt(str);
+        em.getTransaction().commit();
+        em.close();
+        assertEquals(count, addresses.size());
         for (int i = 0; i < addresses.size(); i++) {
             if (i != addresses.size() - 1) {
                 assertNotEquals(addresses.get(i), addresses.get(i + 1));
@@ -113,5 +122,27 @@ class AddressDaoImplTest {
         Object rootEntity = em.getReference(Address.class, id);
         em.remove(rootEntity);
         em.getTransaction().commit();
+    }
+
+    @Test
+    void delete() {
+        id = MockConstants.ID_FOR_DEL;
+        Address address = dao.get(id);
+        People people = MockUtils.getPeople();
+
+        EntityManager em = HibernateUtil.getEntityManager();
+        em.getTransaction().begin();
+        em.persist(people);
+        people.getAddresses().add(address);
+        em.getTransaction().commit();
+
+        List<Address> list_1 = dao.getAll();
+        dao.delete(id);
+        List<Address> list_2 = dao.getAll();
+        assertNotNull(list_1);
+        assertNotNull(list_2);
+        assertEquals(list_1.size() - 1, list_2.size());
+        assertTrue(list_1.containsAll(list_2));
+
     }
 }

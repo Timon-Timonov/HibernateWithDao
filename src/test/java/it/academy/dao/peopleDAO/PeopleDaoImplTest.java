@@ -3,6 +3,8 @@ package it.academy.dao.peopleDAO;
 import it.academy.MockConstants;
 import it.academy.MockUtils;
 import it.academy.Utils.HibernateUtil;
+import it.academy.dao.addressDAO.AddressDAO;
+import it.academy.dao.addressDAO.AddressDaoImpl;
 import it.academy.dto.People;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,7 +26,8 @@ class PeopleDaoImplTest {
         EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         IntStream.range(0, MockConstants.TEST_PEOPLE_COUNT)
-            .mapToObj(i -> MockUtils.getPeople())
+            .mapToObj(i -> MockUtils.getPeople(MockUtils.getAddress()))
+            .peek(people -> em.persist(people.getAddress()))
             .forEach(em::persist);
         em.getTransaction().commit();
         em.close();
@@ -45,9 +48,9 @@ class PeopleDaoImplTest {
 
     @Test
     void save() {
-        People people = MockUtils.getPeople();
+        People people = MockUtils.getPeople(MockUtils.getAddress());
         assertEquals(0, people.getId());
-
+        new AddressDaoImpl().save(people.getAddress());
         dao.save(people);
         assertNotNull(people);
         assertNotEquals(0, people.getId());

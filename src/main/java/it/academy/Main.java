@@ -39,20 +39,22 @@ public class Main {
 
         //creating of entities(1)
         IntStream.range(0, COUNT_OF_EACH_ENTITIES).forEach(i -> {
+            Address address = Address.builder()
+                                  .house(i + ANY_HOUSE_NUMBER)
+                                  .street("UniqueStreet_" + (i + ONE))
+                                  .build();
+            addresses.add(address);
             people.add(People.builder()
                            .age(i + ANY_AGE)
                            .name("UniqueName_" + (i + ONE))
                            .surname("UniqueSurName_" + (i + ONE))
+                           .address(address)
                            .build());
-            addresses.add(Address.builder()
-                              .house(i + ANY_HOUSE_NUMBER)
-                              .street("UniqueStreet_" + (i + ONE))
-                              .build());
         });
 
         //saving inti DB(1)
-        people.forEach(peopleDAO::save);
         addresses.forEach(addressDAO::save);
+        people.forEach(peopleDAO::save);
 
         //changing any parameters(2)
         IntStream.range(0, COUNT_OF_LAST_ROWS).forEach(i -> {
@@ -70,7 +72,9 @@ public class Main {
         //using of special methods
         List<Address> listA = addressDAO.getByStreet(STREET_NAME_FOR_FIND);
         List<People> listP = peopleDAO.getByAgeGreaterThan(MIN_AGE_FOR_FIND);
+        System.out.println("\nResult of special method from AddressDTO:");
         listA.forEach(System.out::println);
+        System.out.println("\nResult of special method from PeopleDTO:");
         listP.forEach(System.out::println);
 
         //deleting any rows(3)

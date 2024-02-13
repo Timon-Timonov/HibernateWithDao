@@ -27,12 +27,13 @@ public class MockUtils {
         return address;
     }
 
-    public static People getPeople() {
+    public static People getPeople(Address address) {
 
         People people = People.builder()
                             .name(MockConstants.NAMES[peopleCount])
                             .surname(MockConstants.SURNAMES[peopleCount])
                             .age(MockConstants.AGE[peopleCount])
+                            .address(address)
                             .build();
         if (++peopleCount >= Math.min(
             MockConstants.NAMES.length, MockConstants.SURNAMES.length)) {

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet author="Timonov_Timon" id="01">
+        <addColumn tableName="people">
+            <column name="address_id" type="int"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="people" columnName="address_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="Timonov_Timon" id="02">
+        <addForeignKeyConstraint baseColumnNames="address_id"
+                                 baseTableName="people"
+                                 constraintName="fk_address_people"
+                                 referencedColumnNames="id"
+                                 referencedTableName="address"
+        />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="fk_address_people"/>
+        </rollback>
+    </changeSet>
+
+
+</databaseChangeLog>
+

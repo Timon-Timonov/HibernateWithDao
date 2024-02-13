@@ -6,5 +6,6 @@
 
     <include file="2024_02_09__1addAddressTable.xml" relativeToChangelogFile="true"/>
     <include file="2024_02_09__2addPeopleTable.xml" relativeToChangelogFile="true"/>
+    <include file="2024_02_09__3addColumnPeopleTable.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

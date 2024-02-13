@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+
+    <changeSet author="Timonov_Timon" id="01">
+        <createTable tableName="people_addresses">
+            <column name="people_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="address_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Timonov_Timon" id="02">
+        <addForeignKeyConstraint baseColumnNames="address_id"
+                                 baseTableName="people_addresses"
+                                 constraintName="fk_address_adr_pep"
+                                 referencedColumnNames="id"
+                                 referencedTableName="address"
+        />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="fk_address_adr_pep"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="Timonov_Timon" id="03">
+        <addForeignKeyConstraint baseColumnNames="people_id"
+                                 baseTableName="people_addresses"
+                                 constraintName="fk_people_adr_pep"
+                                 referencedColumnNames="id"
+                                 referencedTableName="people"
+        />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="fk_people_adr_pep"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

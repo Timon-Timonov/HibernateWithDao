@@ -9,6 +9,7 @@ import it.academy.dto.Address;
 import it.academy.dto.People;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -21,7 +22,7 @@ public class Main {
 
     public static final int ANY_AGE = 35;
     public static final int ANY_HOUSE_NUMBER = 5;
-    public static final int ONE = 1;
+    public static final int NAMES_INCREMENT = 1;
     public static final int COUNT_OF_EACH_ENTITIES = 5;
     public static final int HOUSE_INCREMENT = 1;
     public static final int AGE_INCREMENT = 2;
@@ -29,6 +30,7 @@ public class Main {
     public static final int ID_TO_DELETE = 1;
     public static final String STREET_NAME_FOR_FIND = "UniqueStreet_4";
     public static final int MIN_AGE_FOR_FIND = 40;
+    public static final int INDEX = 0;
 
     public static void main(String[] args) {
 
@@ -39,22 +41,30 @@ public class Main {
 
         //creating of entities(1)
         IntStream.range(0, COUNT_OF_EACH_ENTITIES).forEach(i -> {
-            people.add(People.builder()
-                           .age(i + ANY_AGE)
-                           .name("UniqueName_" + (i + ONE))
-                           .surname("UniqueSurName_" + (i + ONE))
-                           .build());
-            addresses.add(Address.builder()
+            Address adr = Address.builder()
                               .house(i + ANY_HOUSE_NUMBER)
-                              .street("UniqueStreet_" + (i + ONE))
-                              .build());
+                              .street("UniqueStreet_" + (i + NAMES_INCREMENT))
+                              .people(new HashSet<>())
+                              .build();
+            People pep = People.builder()
+                             .age(i + ANY_AGE)
+                             .name("UniqueName_" + (i + NAMES_INCREMENT))
+                             .surname("UniqueSurName_" + (i + NAMES_INCREMENT))
+                             .addresses(new HashSet<>())
+                             .build();
+            pep.getAddresses().add(adr);
+            addresses.add(adr);
+            people.add(pep);
         });
 
         //saving inti DB(1)
-        people.forEach(peopleDAO::save);
         addresses.forEach(addressDAO::save);
+        people.forEach(peopleDAO::save);
 
         //changing any parameters(2)
+        people.get(INDEX).getAddresses().addAll(addresses);
+        peopleDAO.update(people.get(INDEX));
+
         IntStream.range(0, COUNT_OF_LAST_ROWS).forEach(i -> {
             People people1 = people.get(people.size() - i - 1);
             int age = people1.getAge() + AGE_INCREMENT;
@@ -74,8 +84,8 @@ public class Main {
         listP.forEach(System.out::println);
 
         //deleting any rows(3)
-        peopleDAO.delete(ID_TO_DELETE);
         addressDAO.delete(ID_TO_DELETE);
+        peopleDAO.delete(ID_TO_DELETE);
         HibernateUtil.closeFactory();
     }
 }

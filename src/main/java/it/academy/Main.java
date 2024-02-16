@@ -86,6 +86,8 @@ public class Main {
         //deleting any rows(3)
         addressDAO.delete(ID_TO_DELETE);
         peopleDAO.delete(ID_TO_DELETE);
+        addressDAO.closeEntityManager();
+        peopleDAO.closeEntityManager();
         HibernateUtil.closeFactory();
     }
 }

@@ -14,4 +14,6 @@ public interface DAO<T extends Serializable> {
     void update(T t);
 
     List<T> getAll();
+
+    void closeEntityManager();
 }
